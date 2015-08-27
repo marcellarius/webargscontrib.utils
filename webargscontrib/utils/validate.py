@@ -48,6 +48,27 @@ def choices(valid_choices, case_sensitive=False):
         if value in valid_choices:
             return True
         else:
-            raise webargs.ValidationError("Invalid value %s. Valid choices are %s" % (repr(value), repr(valid_choices)))
+            raise webargs.ValidationError(
+                "Invalid value %s. Valid choices are %s" %
+                (repr(value), repr(valid_choices)))
 
     return validate_choices
+
+
+def within(min=None, max=None):
+    """
+    Create a validation function to check whether an argument value is within
+    a specified range (inclusive).
+
+    `min` and `max` cannot both be None.
+    :param min: A lower bound for the value. Optional.
+    :param max: An upper bound for the value. Optional.
+    :return: A validation function
+    """
+    if min is None and max is None:
+        raise ValueError("A min or max value must be specified")
+
+    def validate_within(value):
+        return (min is None or value >= min) and (max is None or value <= max)
+
+    return validate_within
